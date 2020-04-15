@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  configureWabpack: {
+  configureWebpack: {
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src/')
