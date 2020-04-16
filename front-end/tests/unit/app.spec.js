@@ -10,20 +10,15 @@ describe('App.vue', () => {
     })
   })
 
-  it('네비게이션 바를 출력', () => {
-    const home = wrapper.findAll('.nav-link').at(0)
-    const project = wrapper.findAll('.nav-link').at(1)
-    const board = wrapper.findAll('.nav-link').at(2)
-    const planner = wrapper.findAll('.nav-link').at(3)
-
-    expect(home.text()).toBe('홈')
-    expect(project.text()).toBe('프로젝트')
-    expect(board.text()).toBe('게시판')
-    expect(planner.text()).toBe('일정관리')
-  })
-
-  it('로그인 버튼 출력', () => {
-    const login = wrapper.find('.login-link')
-    expect(login.text()).toBe('로그인')
+  it('사이드바 작동', () => {
+    const spyMenuBtn = jest.spyOn(wrapper.vm, 'activeMenuBtn')
+    const spySideBar = jest.spyOn(wrapper.vm, 'activeSideBar')
+    const menu = wrapper.find('.menu')
+    const sideBar = wrapper.find('.side-bar')
+    menu.trigger('click')
+    expect(spyMenuBtn).toHaveBeenCalled()
+    expect(spySideBar).toHaveBeenCalled()
+    expect(menu.classes()).toContain('.active')
+    expect(sideBar.hasStyle('display', 'block')).toBe(true)
   })
 })
