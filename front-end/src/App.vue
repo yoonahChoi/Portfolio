@@ -91,11 +91,12 @@ export default {
   line-height: 60px;
 }
 .side-bar {
+  margin-left: -150px;
+  z-index: 999;
   &.mobile, &.tablet {
   transition: all .4s;
-  transform: translate(-300px,0);
-  -webkit-transform: translate(-300px,0);
-
+  transform: translate(-150px,0);
+  -webkit-transform: translate(-150px,0);
   width: 150px;
   text-align: center;
   background-color: #456795;
@@ -106,8 +107,8 @@ export default {
   }
   &.open.mobile, &.open.tablet {
     transition: all .4s;
-    transform: translate(0,0);
-    -webkit-transform: translate(0,0);
+    transform: translate(150px,0);
+    -webkit-transform: translate(150px,0);
   }
   &.laptop {
     display: block !important;
