@@ -19,7 +19,10 @@
           </form>
         </div>
       </div>
-      <board-table></board-table>
+      <div v-if="loading">Loading....</div>
+      <div v-else>
+        <board-table :list="boardList"></board-table>
+      </div>
       <div class="board-bottom">
         <div class="board-addition">
           <a class="write-btn" href="/board/write">글쓰기</a>
@@ -27,7 +30,7 @@
         <div class="board-page">
           <!-- <a class="page-pre" href="#">&lt;</a> -->
           <ul class="page-list">
-            <li><a href="#" class="selected">1</a></li>
+            <li v-for="(item, index) in pageStartList" :key="index" @click="moreList(index, cid, item)"><span :class="{selected: pageSelected === index}">{{ index +1 }}</span></li>
           </ul>
           <!-- <a class="page-next" href="#">&gt;</a> -->
         </div>
@@ -38,6 +41,7 @@
 
 <script>
 import Table from '@/components/Table'
+import { board } from '@/api/board'
 export default {
   name: 'BoardPage',
   components: {
@@ -46,12 +50,37 @@ export default {
   data () {
     return {
       cid: 0,
-      category: ['전체', '질문', '정보', '잡담', '자료']
+      category: ['전체', '질문', '정보', '잡담', '자료'],
+      loading: false,
+      pageStartList: [],
+      boardList: [],
+      pageSelected: 0
     }
   },
+  created () {
+    this.fetchData()
+  },
   methods: {
-    selectedCategory: function (index) {
+    selectedCategory (index) {
       this.cid = index
+      console.log(index)
+    },
+    moreList (index, cid, start) {
+      this.pageSelected = index
+      console.log(cid, start)
+
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      board.fetch()
+        .then(data => {
+          this.pageStartList = data.pageStartList
+          this.boardList = data.list
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }
@@ -165,10 +194,15 @@ export default {
     display: inline-block;
 
   }
-  a {
+  span {
+    display: block;
     color: black;
     padding: 10px 14px;
     @include page-btn;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 .board-addition {

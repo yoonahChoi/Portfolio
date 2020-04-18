@@ -3,7 +3,7 @@
     <div class="header">
       <div class="content-wrap">
         <div class="logo-wrap" :class="$mq">
-          <h1 class="logo">Yoon's</h1>
+          <h1 class="logo"><router-link to="/">Yoon's</router-link></h1>
         </div>
         <a href="#" class="menu" @click="activeMenuBtn" :class="[{active: isActive},$mq]">
           <span></span>
@@ -13,7 +13,6 @@
         <div class="side-bar" :class="[{open: isOpen},$mq]">
           <nav class="nav" :class="$mq">
             <ul class="nav-list" :class="$mq">
-              <li><router-link class="nav-link" to="/">홈</router-link></li>
               <li><router-link class="nav-link" to="/project">프로젝트</router-link></li>
               <li><router-link class="nav-link" to="/board">게시판</router-link></li>
               <li><router-link class="nav-link" to="/planner">일정관리</router-link></li>
@@ -140,7 +139,7 @@ export default {
 .login-link {
   color: #fff;
 }
-.router-link-exact-active {
+.router-link-active {
   color: #fff !important;
   font-weight: bold;
 }

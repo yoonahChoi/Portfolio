@@ -22,41 +22,14 @@
         </tr>
       </thead>
       <tbody class="table-body" :class="$mq">
-        <tr>
-          <td class="num">12</td>
-          <td class="class">자료</td>
-          <td class="title"><a class="title-link" href="">새로운 자료 참고하세요</a></td>
-          <td class="writer">인포</td>
-          <td class="date">2020-04-08</td>
-          <td class="view">0</td>
-          <td class="like">0</td>
-        </tr>
-        <tr>
-          <td class="num">12</td>
-          <td class="class">자료</td>
-          <td class="title"><a class="title-link" href="">새로운 자료 참고하세요</a></td>
-          <td class="writer">인포</td>
-          <td class="date">2020-04-08</td>
-          <td class="view">0</td>
-          <td class="like">0</td>
-        </tr>
-        <tr>
-          <td class="num">12</td>
-          <td class="class">자료</td>
-          <td class="title"><a class="title-link" href="">새로운 자료 참고하세요</a></td>
-          <td class="writer">인포</td>
-          <td class="date">2020-04-08</td>
-          <td class="view">0</td>
-          <td class="like">0</td>
-        </tr>
-        <tr>
-          <td class="num">12</td>
-          <td class="class">자료</td>
-          <td class="title"><a class="title-link" href="">새로운 자료 참고하세요</a></td>
-          <td class="writer">인포</td>
-          <td class="date">2020-04-08</td>
-          <td class="view">0</td>
-          <td class="like">0</td>
+        <tr v-for="item in list" :key="item.id">
+          <td class="num">{{ item.id }}</td>
+          <td class="class">{{ item.category }}</td>
+          <td class="title"><a class="title-link" href="">{{ item.title }}</a></td>
+          <td class="writer">{{ item.writer }}</td>
+          <td class="date">{{ item.reg_date }}</td>
+          <td class="view">{{ item.hits }}</td>
+          <td class="like">{{ item.likes }}</td>
         </tr>
       </tbody>
     </table>
@@ -66,7 +39,7 @@
 <script>
 export default {
   name: 'Table',
-  props: []
+  props: ['list']
 }
 </script>
 

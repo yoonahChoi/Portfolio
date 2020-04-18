@@ -14,13 +14,11 @@ const routes = [
   },
   {
     path: '/project',
-    name: 'Project',
     component: () => import('@/views/ProjectPage.vue')
   },
   ...board,
   {
     path: '/planner',
-    name: 'Planner',
     component: () => import('@/views/PlannerPage.vue')
   },
   {
