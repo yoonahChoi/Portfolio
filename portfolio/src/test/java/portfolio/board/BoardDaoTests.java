@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import portfolio.board.config.BoardTestConfiguration;
 import portfolio.dao.board.BoardDaoImpl;
-import portfolio.dto.board.Board;
+import portfolio.model.board.Board;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = BoardTestConfiguration.class)
@@ -135,9 +135,21 @@ public class BoardDaoTests {
 
 		dbBoard = dao.select(list.get(0).getId());
 		likeCount = dbBoard.getLikes();
-		dao.updatelikeCount(dbBoard.getId());
+		dao.updateLikeCount(dbBoard.getId());
 		dbBoard = dao.select(list.get(0).getId());
 		assertThat(dbBoard.getLikes(), is(likeCount + 1));
+	}
+	
+	@Test
+	public void updateDislikeCount() {
+		int dislikeCount;
+		Board dbBoard;
+
+		dbBoard = dao.select(list.get(0).getId());
+		dislikeCount = dbBoard.getDislikes();
+		dao.updateDislikeCount(dbBoard.getId());
+		dbBoard = dao.select(list.get(0).getId());
+		assertThat(dbBoard.getDislikes(), is(dislikeCount + 1));
 	}
 
 	@Test

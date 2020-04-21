@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const DOMAIN = 'http://localhost:3000'
+const DOMAIN = 'http://localhost:8080/portfolio'
 
 const request = (method, url, data) => {
   return axios({
@@ -14,7 +14,8 @@ const request = (method, url, data) => {
 }
 
 export const board = {
-  fetch () {
-    return request('get', '/board')
+  fetch (cid, start) {
+    if (cid === 0) return request('get', `/board/?start=${start}`)
+    return request('get', `/board/${cid}?start=${start}`)
   }
 }

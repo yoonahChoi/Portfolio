@@ -19,10 +19,7 @@
           </form>
         </div>
       </div>
-      <div v-if="loading">Loading....</div>
-      <div v-else>
-        <board-table :list="boardList"></board-table>
-      </div>
+      <board-table :list="boardList"></board-table>
       <div class="board-bottom">
         <div class="board-addition">
           <a class="write-btn" href="/board/write">글쓰기</a>
@@ -51,35 +48,28 @@ export default {
     return {
       cid: 0,
       category: ['전체', '질문', '정보', '잡담', '자료'],
-      loading: false,
       pageStartList: [],
       boardList: [],
       pageSelected: 0
     }
   },
   created () {
-    this.fetchData()
+    this.fetchData(0)
   },
   methods: {
     selectedCategory (index) {
       this.cid = index
-      console.log(index)
+      this.fetchData(index)
     },
     moreList (index, cid, start) {
       this.pageSelected = index
-      console.log(cid, start)
-
-      this.fetchData()
+      this.fetchData(cid, start)
     },
-    fetchData () {
-      this.loading = true
-      board.fetch()
+    fetchData (index, start = 0) {
+      board.fetch(index, start)
         .then(data => {
           this.pageStartList = data.pageStartList
           this.boardList = data.list
-        })
-        .finally(() => {
-          this.loading = false
         })
     }
   }

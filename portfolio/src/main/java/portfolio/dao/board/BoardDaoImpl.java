@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import portfolio.dto.board.Board;
+import portfolio.model.board.Board;
 
 import static portfolio.dao.board.BoardDaoSqls.*;
 
@@ -93,10 +93,17 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public int updatelikeCount(Integer boardNo) {
+	public int updateLikeCount(Integer boardNo) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("boardNo", boardNo);
 		return jdbc.update(UPDATE_BOARD_LIKES, params);
+	}
+	
+	@Override
+	public int updateDislikeCount(Integer boardNo) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("boardNo", boardNo);
+		return jdbc.update(UPDATE_BOARD_DISLIKES, params);
 	}
 
 	@Override

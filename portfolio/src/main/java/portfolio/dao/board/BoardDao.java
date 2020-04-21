@@ -2,7 +2,7 @@ package portfolio.dao.board;
 
 import java.util.List;
 
-import portfolio.dto.board.Board;
+import portfolio.model.board.Board;
 
 public interface BoardDao {
 	
@@ -25,7 +25,9 @@ public interface BoardDao {
 	
 	public abstract int updateReadCount(Integer boardNo);
 	
-	public abstract int updatelikeCount(Integer boardNo);
+	public abstract int updateLikeCount(Integer boardNo);
+	
+	public abstract int updateDislikeCount(Integer boardNo);
 	
 	//Delete
 	public abstract int delete(Board board);

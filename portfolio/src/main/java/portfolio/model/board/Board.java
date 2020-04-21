@@ -1,4 +1,4 @@
-package portfolio.dto.board;
+package portfolio.model.board;
 
 public class Board {
 	private int id;
@@ -11,6 +11,7 @@ public class Board {
 	private String reg_date;
 	private int hits;
 	private int likes;
+	private int dislikes;
 
 	public Board() {
 	}
@@ -21,17 +22,6 @@ public class Board {
 		this.content = content;
 		this.writer = writer;
 		this.password = password;
-	}
-
-	public Board(int id, String category, String title, String content, String writer, String reg_date, int hits, int likes) {
-		this.id = id;
-		this.category = category;
-		this.title = title;
-		this.content = content;
-		this.writer = writer;
-		this.reg_date = reg_date;
-		this.hits = hits;
-		this.likes = likes;
 	}
 
 	public int getId() {
@@ -114,11 +104,19 @@ public class Board {
 		this.likes = likes;
 	}
 
+	public int getDislikes() {
+		return dislikes;
+	}
+
+	public void setDislikes(int dislikes) {
+		this.dislikes = dislikes;
+	}
+
 	@Override
 	public String toString() {
 		return "Board [id=" + id + ", categoryId=" + categoryId + ", category=" + category + ", title=" + title
 				+ ", content=" + content + ", writer=" + writer + ", password=" + password + ", reg_date=" + reg_date
-				+ ", hits=" + hits + ", likes=" + likes + "]";
+				+ ", hits=" + hits + ", likes=" + likes + ", dislikes=" + dislikes + "]";
 	}
 
 }
