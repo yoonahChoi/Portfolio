@@ -4,7 +4,7 @@
       <div class="board-top" :class="$mq">
         <div class="category-wrap">
           <ul class="category-list" :class="$mq">
-            <li v-for="(cate, index) in category" :key="index" @click="selectedCategory(index)" :class="{selected: index === cid}">{{ cate }}</li>
+            <li v-for="(cate, index) in category" :key="index" @click="selectCategory(index)" :class="{selected: index === currentCategory}">{{ cate.name }}</li>
           </ul>
         </div>
         <div class="search-wrap" :class="$mq">
@@ -25,11 +25,13 @@
           <a class="write-btn" href="/board/write">글쓰기</a>
         </div>
         <div class="board-page">
-          <!-- <a class="page-pre" href="#">&lt;</a> -->
+          <span v-show="category[currentCategory].pageBlock > 0" class="page-pre" href="#" @click="changePageList('pre')">&lt;</span>
           <ul class="page-list">
-            <li v-for="(item, index) in pageStartList" :key="index" @click="moreList(index, cid, item)"><span :class="{selected: pageSelected === index}">{{ index +1 }}</span></li>
+            <li v-for="(item, index) in pageList" :key="index" @click="getList(index, item)">
+              <span :class="{selected: selectedPage === index}">{{ (item/10) + 1 }}</span>
+            </li>
           </ul>
-          <!-- <a class="page-next" href="#">&gt;</a> -->
+          <span v-show="pageNext" class="page-next" href="#" @click="changePageList('next')">&gt;</span>
         </div>
       </div>
     </div>
@@ -39,38 +41,82 @@
 <script>
 import Table from '@/components/Table'
 import { board } from '@/api/board'
+import paging from '@/utils/Paging'
 export default {
   name: 'BoardPage',
   components: {
     'board-table': Table
   },
+  computed: {
+    pageNext () {
+      return this.pageStartList.length >= 2 && this.category[this.currentCategory].pageBlock < this.pageStartList.length - 1
+    }
+  },
   data () {
     return {
-      cid: 0,
-      category: ['전체', '질문', '정보', '잡담', '자료'],
-      pageStartList: [],
       boardList: [],
-      pageSelected: 0
+      category: [
+        {
+          id: 0,
+          name: '전체',
+          pageBlock: 0
+        }, {
+          id: 1,
+          name: '질문',
+          pageBlock: 0
+        }, {
+          id: 2,
+          name: '정보',
+          pageBlock: 0
+        }, {
+          id: 3,
+          name: '잡담',
+          pageBlock: 0
+        }, {
+          id: 4,
+          name: '자료',
+          pageBlock: 0
+        }],
+      currentCategory: 0,
+      pageStartList: [],
+      pageList: [],
+      selectedPage: 0,
+      pageSize: 5
     }
   },
   created () {
     this.fetchData(0)
   },
   methods: {
-    selectedCategory (index) {
-      this.cid = index
+    selectCategory (index) {
+      this.selectedPage = 0
+      this.category[index].pageBlock = 0
+      this.currentCategory = index
       this.fetchData(index)
     },
-    moreList (index, cid, start) {
-      this.pageSelected = index
-      this.fetchData(cid, start)
+    getList (index, start) {
+      this.selectedPage = index
+      this.fetchData(this.currentCategory, start)
     },
     fetchData (index, start = 0) {
       board.fetch(index, start)
         .then(data => {
-          this.pageStartList = data.pageStartList
+          this.pageStartList = paging(data.pageStartList, this.pageSize)
           this.boardList = data.list
+          this.changePageBlock(this.category[this.currentCategory].pageBlock)
         })
+    },
+    changePageBlock (index) {
+      this.pageList = this.pageStartList[index]
+    },
+    changePageList (direction) {
+      if (direction === 'pre') {
+        this.changePageBlock(--this.category[this.currentCategory].pageBlock)
+      } else if (direction === 'next') {
+        this.changePageBlock(++this.category[this.currentCategory].pageBlock)
+      }
+      this.selectedPage = 0
+      this.fetchData(this.currentCategory, this.pageList[0])
     }
   }
 }
@@ -169,11 +215,19 @@ export default {
   padding: 6px 14px;
   border-radius: 5px;
   margin: 0 5px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 .page-pre {
   float: left;
   width: 10px;
   @include page-btn;
+  &:hover {
+    background-color: $classic-blue;
+    color: #fff;
+  }
 }
 .page-next {
   @extend .page-pre;
@@ -189,10 +243,6 @@ export default {
     color: black;
     padding: 10px 14px;
     @include page-btn;
-
-    &:hover {
-      cursor: pointer;
-    }
   }
 }
 .board-addition {
