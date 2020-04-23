@@ -154,8 +154,7 @@ export default {
   li {
     display: inline-block;
     border: 1px solid $white-blue;
-    box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
     padding: 7px 10px;
     color: $classic-blue;
     margin: 0 5px;
@@ -187,6 +186,8 @@ export default {
   position: relative;
   top: -3px;
   height: 26px;
+  line-height: 26px;
+  padding: 1px 5px;
   @include search-gap;
 
   &.mobile {
@@ -213,7 +214,6 @@ export default {
 @mixin page-btn {
   border: 1px solid $white-blue;
   padding: 6px 14px;
-  border-radius: 5px;
   margin: 0 5px;
 
   &:hover {

@@ -73,9 +73,12 @@ export default {
       text-align: left;
     }
   }
-  tr:hover .title-link {
+  tr:hover {
+    background-color: $white-blue;
+    .title-link {
     color: $classic-blue;
     text-decoration: underline;
+    }
   }
   .num, .date, .view {
     color: gray;

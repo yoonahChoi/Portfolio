@@ -17,5 +17,8 @@ export const board = {
   fetch (cid, start) {
     if (cid === 0) return request('get', `/board/?start=${start}`)
     return request('get', `/board/${cid}?start=${start}`)
+  },
+  post (data) {
+    return request('post', '/board/', data)
   }
 }

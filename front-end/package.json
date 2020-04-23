@@ -14,7 +14,8 @@
     "sass": "^1.26.3",
     "vue": "^2.6.11",
     "vue-mq": "^1.0.1",
-    "vue-router": "^3.1.6"
+    "vue-router": "^3.1.6",
+    "vue2-editor": "^2.10.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
