@@ -1,17 +1,23 @@
 package portfolio.service.board;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import portfolio.dao.board.BoardDao;
 import portfolio.model.board.Board;
 
 @Service
 public class BoardServiceImpl implements BoardService {
+
+	private static final String SAVE_PATH = "c:/upload/";
 
 	@Autowired
 	private BoardDao dao;
@@ -60,12 +66,12 @@ public class BoardServiceImpl implements BoardService {
 		dao.updateReadCount(id);
 		return dao.select(id);
 	}
-	
+
 	@Override
 	public int like(int id) {
 		return dao.updateLikeCount(id);
 	}
-	
+
 	@Override
 	public int dislike(int id) {
 		return dao.updateDislikeCount(id);
@@ -85,6 +91,55 @@ public class BoardServiceImpl implements BoardService {
 				board.setReg_date(date);
 			}
 		}
+	}
+
+	@Override
+	public String upload(MultipartFile file) {
+		String url = null;
+
+		try {
+			String originFileName = file.getOriginalFilename();
+			String extensionName = originFileName.substring(originFileName.lastIndexOf("."), originFileName.length());
+
+			String saveFileName = convertFileName(extensionName);
+
+			writeFile(file, saveFileName);
+
+			url = SAVE_PATH + saveFileName;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return url;
+	}
+
+	private String convertFileName(String extensionName) {
+		String fileName = "";
+
+		Calendar calendar = Calendar.getInstance();
+		fileName += calendar.get(Calendar.YEAR);
+		fileName += calendar.get(Calendar.MONTH) + 1;
+		fileName += calendar.get(Calendar.DATE);
+		fileName += calendar.get(Calendar.HOUR);
+		fileName += calendar.get(Calendar.MINUTE);
+		fileName += calendar.get(Calendar.SECOND);
+		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += extensionName;
+
+		return fileName;
+
+	}
+
+	private boolean writeFile(MultipartFile file, String saveFileName) throws IOException {
+		boolean result = false;
+
+		byte[] data = file.getBytes();
+		FileOutputStream fos = new FileOutputStream(SAVE_PATH + saveFileName);
+		fos.write(data);
+		fos.close();
+
+		return result;
 	}
 
 }

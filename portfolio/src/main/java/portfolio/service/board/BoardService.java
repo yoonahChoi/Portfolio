@@ -2,6 +2,8 @@ package portfolio.service.board;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import portfolio.model.board.Board;
 
 public interface BoardService {
@@ -26,4 +28,6 @@ public interface BoardService {
 	public abstract int like(int id);
 
 	public abstract int dislike(int id);
+
+	public abstract String upload(MultipartFile file);
 }

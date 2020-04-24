@@ -3,6 +3,18 @@ import axios from 'axios'
 const DOMAIN = 'http://localhost:8080/portfolio'
 
 const request = (method, url, data) => {
+  if (method === 'post') {
+    return axios({
+      method,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      url: DOMAIN + url,
+      data
+    }).then(result => result.data)
+      .catch(result => {
+        console.log(result)
+      })
+  }
+
   return axios({
     method,
     url: DOMAIN + url,

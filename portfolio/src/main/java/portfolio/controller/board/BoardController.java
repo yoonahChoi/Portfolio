@@ -1,5 +1,8 @@
 package portfolio.controller.board;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import portfolio.model.board.Board;
 import portfolio.model.board.ListDto;
@@ -76,8 +81,22 @@ public class BoardController {
 	}
 
 	@PostMapping("/")
-	public void write(HttpServletRequest request) {
+	public void write(MultipartHttpServletRequest request) {
+		int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+		String writer = request.getParameter("writer");
+		String password = request.getParameter("password");
+		String title = request.getParameter("title");
+		String content = request.getParameter("content");
+		MultipartFile file = request.getFile("file");
+		String fileUrl = "";
+
+		if (!file.getOriginalFilename().isEmpty()) {
+			fileUrl = service.upload(file);
+		}
+		
+		System.out.println(fileUrl);
 	}
+
 	private ListDto convertToListDto(Board board) {
 		ListDto listDto = modelMapper.map(board, ListDto.class);
 		return listDto;

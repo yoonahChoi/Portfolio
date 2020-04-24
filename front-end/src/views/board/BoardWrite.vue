@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrap">
     <div class="form-wrap" :class="$mq">
-      <form @submit.prevent="postContent" action="">
+      <form @submit.prevent="postContent">
         <select name="categoryId" class="category-select" :class="$mq" v-model="selected">
           <option value="">카테고리</option>
           <option value="1">질문</option>
@@ -12,7 +12,8 @@
         <input v-model="writer" type="text" class="writer-input" placeholder="닉네임" :class="$mq" maxlength="15" required>
         <input v-model="password" type="text" class="password-input" placeholder="비밀번호" :class="$mq" maxlength="15" required>
         <input v-model="title" class="title-input" type="text" placeholder="제목을 입력해 주세요." maxlength="40" required>
-        <vue-editor id="editor" v-model="content" required></vue-editor>
+        <vue-editor id="editor" v-model="content"></vue-editor>
+        <input type="file" class="file-input" name="file" v-on:change="handleFileUpload($event)">
         <div class="btn-wrap">
           <a href="/board" class="cancel-btn">취소</a>
           <button type="submit" class="submit-btn" :class="$mq">등록</button>
@@ -38,7 +39,8 @@ export default {
       writer: '',
       password: '',
       title: '',
-      content: ''
+      content: '',
+      file: ''
     }
   },
   methods: {
@@ -55,7 +57,11 @@ export default {
       form.append('title', this.title)
       form.append('content', this.content)
 
-      // board.post(form)
+      if (this.file !== '') {
+        form.append('file', this.file)
+      }
+
+      board.post(form)
 
       alert('게시글 등록 성공')
       this.$router.push('/board')
@@ -69,6 +75,9 @@ export default {
         alert('카테고리를 골라주세요')
         return true
       }
+    },
+    handleFileUpload (e) {
+      this.file = e.target.files[0]
     }
   }
 }
@@ -76,6 +85,14 @@ export default {
 
 <style lang="scss">
 @import '@/assets/scss/_variables.scss';
+
+@mixin write-page-btn {
+  padding: 8px;
+  border: 1px solid $white-blue;
+  color: $classic-blue;
+  background-color: #fff;
+  font-size: 13px;
+}
 
 .form-wrap {
   &.laptop {
@@ -120,17 +137,12 @@ export default {
   height: 30px;
   padding: 1px 5px;
 }
+.file-input {
+  margin-top: 20px;
+}
 .btn-wrap {
   overflow: hidden;
   margin-top: 30px;
-}
-
-@mixin write-page-btn {
-  padding: 8px;
-  border: 1px solid $white-blue;
-  color: $classic-blue;
-  background-color: #fff;
-  font-size: 13px;
 }
 .cancel-btn {
   float: left;
