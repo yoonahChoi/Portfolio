@@ -17,7 +17,7 @@
         <div class="btn-wrap">
           <a href="/board" class="cancel-btn">취소</a>
           <button type="submit" class="submit-btn" :class="$mq">등록</button>
-          <button @click.prevent="saveContent" class="temporary-btn" :class="$mq">임시저장</button>
+          <!-- <button @click.prevent="saveContent" class="temporary-btn" :class="$mq">임시저장</button> -->
         </div>
       </form>
     </div>
@@ -62,9 +62,13 @@ export default {
       }
 
       board.post(form)
-
-      alert('게시글 등록 성공')
-      this.$router.push('/board')
+        .then(() => {
+          alert('게시글 등록 성공')
+          this.$router.push('/board')
+        }).catch(err => {
+          alert('게시글 등록 실패')
+          console.log(err)
+        })
     },
     formValidate () {
       if (!this.content.length) {

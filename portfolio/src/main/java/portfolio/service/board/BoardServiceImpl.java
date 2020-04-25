@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import portfolio.dao.board.BoardDao;
 import portfolio.model.board.Board;
+import portfolio.model.board.File;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -47,17 +48,33 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void write(Board board) {
+	public void write(Board board, MultipartFile file) {
 		dao.insert(board);
+		int id = dao.getLastId("board");
+		if (file != null) {
+			upload(file, id);
+		}
 	}
 
 	@Override
-	public int edit(Board board) {
+	public int edit(Board board, MultipartFile file) {
+		if (!file.getOriginalFilename().isEmpty()) {
+			File fileDb = dao.selectFile(board.getId());
+
+			if (fileDb != null) {
+				dao.deleteFile(fileDb.getId());
+			}
+			upload(file, board.getId());
+		}
 		return dao.update(board);
 	}
 
 	@Override
 	public int delete(Board board) {
+		File fileDb = dao.selectFile(board.getId());
+		if (fileDb != null) {
+			dao.deleteFile(fileDb.getId());
+		}
 		return dao.delete(board);
 	}
 
@@ -77,6 +94,27 @@ public class BoardServiceImpl implements BoardService {
 		return dao.updateDislikeCount(id);
 	}
 
+	@Override
+	public File getFile(int board_id) {
+		return dao.selectFile(board_id);
+
+	}
+
+	public void upload(MultipartFile file, int board_id) {
+		try {
+			String originFileName = file.getOriginalFilename();
+			String extensionName = originFileName.substring(originFileName.lastIndexOf("."), originFileName.length());
+
+			String saveFileName = convertFileName(extensionName);
+
+			writeFile(file, saveFileName);
+			dao.insertFile(new File(board_id, originFileName, saveFileName, extensionName));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void ifTodayChangeRegDate(List<Board> list) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String today = format.format(new Date());
@@ -91,27 +129,6 @@ public class BoardServiceImpl implements BoardService {
 				board.setReg_date(date);
 			}
 		}
-	}
-
-	@Override
-	public String upload(MultipartFile file) {
-		String url = null;
-
-		try {
-			String originFileName = file.getOriginalFilename();
-			String extensionName = originFileName.substring(originFileName.lastIndexOf("."), originFileName.length());
-
-			String saveFileName = convertFileName(extensionName);
-
-			writeFile(file, saveFileName);
-
-			url = SAVE_PATH + saveFileName;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return url;
 	}
 
 	private String convertFileName(String extensionName) {

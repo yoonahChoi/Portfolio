@@ -1,16 +1,10 @@
 package portfolio.controller.board;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import portfolio.model.board.Board;
+import portfolio.model.board.DetailDto;
+import portfolio.model.board.File;
 import portfolio.model.board.ListDto;
 import portfolio.service.board.BoardService;
 
@@ -40,8 +36,9 @@ public class BoardController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@GetMapping({ "/", "/{cid}" })
-	public ResponseEntity<Map<String, Object>> list(@PathVariable Optional<Integer> cid,
+	@GetMapping("/")
+	public ResponseEntity<Map<String, Object>> list(
+			@RequestParam(name = "cid", required = false, defaultValue = "0") int cid,
 			@RequestParam(name = "start", required = false, defaultValue = "0") int start) {
 
 		ResponseEntity<Map<String, Object>> entity = null;
@@ -51,12 +48,12 @@ public class BoardController {
 		int count = 0;
 
 		try {
-			if (cid.isPresent()) {
-				list = service.list(start, cid.get());
-				count = service.count(cid.get());
-			} else {
+			if (cid == 0) {
 				list = service.list(start);
 				count = service.count();
+			} else {
+				list = service.list(start, cid);
+				count = service.count(cid);
 			}
 
 			int pageCount = count / BoardService.LIMIT;
@@ -80,21 +77,40 @@ public class BoardController {
 		return entity;
 	}
 
-	@PostMapping("/")
-	public void write(MultipartHttpServletRequest request) {
-		int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-		String writer = request.getParameter("writer");
-		String password = request.getParameter("password");
-		String title = request.getParameter("title");
-		String content = request.getParameter("content");
-		MultipartFile file = request.getFile("file");
-		String fileUrl = "";
+	@GetMapping("/{id}")
+	public ResponseEntity<DetailDto> detail(@PathVariable int id) {
+		ResponseEntity<DetailDto> entity = null;
+		Board board = null;
+		DetailDto detailDto = null;
 
-		if (!file.getOriginalFilename().isEmpty()) {
-			fileUrl = service.upload(file);
+		try {
+			board = service.read(id);
+			File file = service.getFile(board.getId());
+			detailDto = convertToDetailDto(board, file);
+
+			entity = new ResponseEntity<DetailDto>(detailDto, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<DetailDto>(HttpStatus.BAD_REQUEST);
 		}
-		
-		System.out.println(fileUrl);
+
+		return entity;
+	}
+
+	@PostMapping("/")
+	public HttpStatus write(MultipartHttpServletRequest request) {
+		Board board = new Board();
+
+		board.setCategory_id(Integer.parseInt(request.getParameter("categoryId")));
+		board.setWriter(request.getParameter("writer"));
+		board.setPassword(request.getParameter("password"));
+		board.setTitle(request.getParameter("title"));
+		board.setContent(request.getParameter("content"));
+		MultipartFile file = request.getFile("file");
+
+		service.write(board, file);
+
+		return HttpStatus.CREATED;
 	}
 
 	private ListDto convertToListDto(Board board) {
@@ -102,9 +118,21 @@ public class BoardController {
 		return listDto;
 	}
 
-//	private Board convertListDtoToEntity(ListDto listDto) throws ParseException {
-//		Board board = modelMapper.map(listDto, Board.class);
-//		return board;
-//	}
+	private DetailDto convertToDetailDto(Board board, File file) {
+		DetailDto detailDto = null;
+
+		if (file != null) {
+			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getTitle(),
+					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
+					board.getDislikes(), file.getId(), file.getOriginname());
+		} else {
+			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getTitle(),
+					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
+					board.getDislikes());
+		}
+
+		return detailDto;
+
+	}
 
 }

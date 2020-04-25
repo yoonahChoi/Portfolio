@@ -2,7 +2,7 @@ package portfolio.model.board;
 
 public class Board {
 	private int id;
-	private int categoryId;
+	private int category_id;
 	private String category;
 	private String title;
 	private String content;
@@ -16,8 +16,8 @@ public class Board {
 	public Board() {
 	}
 
-	public Board(int categoryId, String title, String content, String writer, String password) {
-		this.categoryId = categoryId;
+	public Board(int category_id, String title, String content, String writer, String password) {
+		this.category_id = category_id;
 		this.title = title;
 		this.content = content;
 		this.writer = writer;
@@ -32,12 +32,12 @@ public class Board {
 		this.id = id;
 	}
 
-	public int getCategoryId() {
-		return categoryId;
+	public int getCategory_id() {
+		return category_id;
 	}
 
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
+	public void setCategory_id(int category_id) {
+		this.category_id = category_id;
 	}
 
 	public String getCategory() {
@@ -114,7 +114,7 @@ public class Board {
 
 	@Override
 	public String toString() {
-		return "Board [id=" + id + ", categoryId=" + categoryId + ", category=" + category + ", title=" + title
+		return "Board [id=" + id + ", category_id=" + category_id + ", category=" + category + ", title=" + title
 				+ ", content=" + content + ", writer=" + writer + ", password=" + password + ", reg_date=" + reg_date
 				+ ", hits=" + hits + ", likes=" + likes + ", dislikes=" + dislikes + "]";
 	}

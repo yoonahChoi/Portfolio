@@ -25,7 +25,7 @@
         <tr v-for="item in list" :key="item.id">
           <td class="num">{{ item.id }}</td>
           <td class="class">{{ item.category }}</td>
-          <td class="title"><a class="title-link" href="">{{ item.title }}</a></td>
+          <td class="title"><span class="title-link" @click="emitBoardId(item.id)">{{ item.title }}</span></td>
           <td class="writer">{{ item.writer }}</td>
           <td class="date">{{ item.reg_date }}</td>
           <td class="view">{{ item.hits }}</td>
@@ -39,7 +39,12 @@
 <script>
 export default {
   name: 'Table',
-  props: ['list']
+  props: ['list'],
+  methods: {
+    emitBoardId (id) {
+      this.$emit('child', id)
+    }
+  }
 }
 </script>
 
@@ -69,8 +74,10 @@ export default {
     text-align: center;
 
     .title-link {
+      display: block;
       color: black;
       text-align: left;
+      cursor: pointer;
     }
   }
   tr:hover {

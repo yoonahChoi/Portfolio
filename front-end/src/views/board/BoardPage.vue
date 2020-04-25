@@ -1,6 +1,7 @@
 <template>
   <div class="content-wrap">
     <div class="board-wrap">
+      <board-detail v-if="boardId > 0" :detail="detail"></board-detail>
       <div class="board-top" :class="$mq">
         <div class="category-wrap">
           <ul class="category-list" :class="$mq">
@@ -19,33 +20,35 @@
           </form>
         </div>
       </div>
-      <board-table :list="boardList"></board-table>
+      <board-table :list="boardList" @child="getBoardId"></board-table>
       <div class="board-bottom">
-        <div class="board-addition">
-          <a class="write-btn" href="/board/write">글쓰기</a>
-        </div>
-        <div class="board-page">
-          <span v-show="category[currentCategory].pageBlock > 0" class="page-pre" href="#" @click="changePageList('pre')">&lt;</span>
-          <ul class="page-list">
-            <li v-for="(item, index) in pageList" :key="index" @click="getList(index, item)">
-              <span :class="{selected: selectedPage === index}">{{ (item/10) + 1 }}</span>
-            </li>
-          </ul>
-          <span v-show="pageNext" class="page-next" href="#" @click="changePageList('next')">&gt;</span>
-        </div>
+          <div class="board-addition">
+            <a class="write-btn" href="/board/write">글쓰기</a>
+          </div>
+          <div class="board-page">
+            <span v-show="category[currentCategory].pageBlock > 0" class="page-pre" href="#" @click="changePageList('pre')">&lt;</span>
+            <ul class="page-list">
+              <li v-for="(item, index) in pageList" :key="index" @click="getList(index, item)">
+                <span :class="{selected: selectedPage === index}">{{ (item/10) + 1 }}</span>
+              </li>
+            </ul>
+            <span v-show="pageNext" class="page-next" href="#" @click="changePageList('next')">&gt;</span>
+          </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Table from '@/components/Table'
 import { board } from '@/api/board'
 import paging from '@/utils/Paging'
+import Table from '@/components/board/Table'
+import BoardDetail from '@/components/board/BoardDetail'
 export default {
   name: 'BoardPage',
   components: {
-    'board-table': Table
+    'board-table': Table,
+    'board-detail': BoardDetail
   },
   computed: {
     pageNext () {
@@ -55,6 +58,7 @@ export default {
   data () {
     return {
       boardList: [],
+      boardId: 0,
       category: [
         {
           id: 0,
@@ -78,6 +82,7 @@ export default {
           pageBlock: 0
         }],
       currentCategory: 0,
+      detail: '',
       pageStartList: [],
       pageList: [],
       selectedPage: 0,
@@ -85,21 +90,21 @@ export default {
     }
   },
   created () {
-    this.fetchData(0)
+    this.fetchList(0)
   },
   methods: {
     selectCategory (index) {
       this.selectedPage = 0
       this.category[index].pageBlock = 0
       this.currentCategory = index
-      this.fetchData(index)
+      this.fetchList(index)
     },
     getList (index, start) {
       this.selectedPage = index
-      this.fetchData(this.currentCategory, start)
+      this.fetchList(this.currentCategory, start)
     },
-    fetchData (index, start = 0) {
-      board.fetch(index, start)
+    fetchList (index, start = 0) {
+      board.fetchList(index, start)
         .then(data => {
           this.pageStartList = paging(data.pageStartList, this.pageSize)
           this.boardList = data.list
@@ -117,6 +122,16 @@ export default {
       }
       this.selectedPage = 0
       this.fetchData(this.currentCategory, this.pageList[0])
+    },
+    getBoardId (id) {
+      this.fetchDetail(id)
+    },
+    fetchDetail (bid) {
+      this.boardId = bid
+      board.fetch(bid)
+        .then(data => {
+          this.detail = data
+        })
     }
   }
 }

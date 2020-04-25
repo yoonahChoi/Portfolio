@@ -105,7 +105,7 @@ public class BoardDaoTests {
 	public void update() {
 		Board board = list.get(0);
 
-		board.setCategoryId(3);
+		board.setCategory_id(3);
 		board.setTitle("update 제목");
 		board.setContent("update 내용");
 		board.setWriter("update 작성자");
@@ -176,7 +176,7 @@ public class BoardDaoTests {
 
 	private void compareVO(Board vo1, Board vo2) {
 		assertThat(vo1.getId(), is(vo2.getId()));
-		assertThat(vo1.getCategoryId(), is(vo2.getCategoryId()));
+		assertThat(vo1.getCategory_id(), is(vo2.getCategory_id()));
 		assertThat(vo1.getTitle(), is(vo2.getTitle()));
 		assertThat(vo1.getContent(), is(vo2.getContent()));
 		assertThat(vo1.getWriter(), is(vo2.getWriter()));

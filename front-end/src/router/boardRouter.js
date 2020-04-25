@@ -1,10 +1,7 @@
 export default [
   {
     path: '/board',
-    component: () => import('@/views/board/BoardPage.vue'),
-    childrens: [
-
-    ]
+    component: () => import('@/views/board/BoardPage.vue')
   },
   {
     path: '/board/write',
