@@ -6,10 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.CookieGenerator;
+
+import com.mysql.jdbc.StringUtils;
 
 import portfolio.model.board.Board;
 import portfolio.model.board.DetailDto;
@@ -78,13 +87,24 @@ public class BoardController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DetailDto> detail(@PathVariable int id) {
+	public ResponseEntity<DetailDto> detail(@PathVariable int id, @CookieValue(value="HITCOOKIE", defaultValue="", required = false) String cookieValue, HttpServletResponse res) {
 		ResponseEntity<DetailDto> entity = null;
 		Board board = null;
 		DetailDto detailDto = null;
 
+		String bid = "|" + id;
+
+		if (StringUtils.indexOfIgnoreCase(cookieValue, bid) == -1) {
+			Cookie cookie = new Cookie("HITCOOKIE", cookieValue + bid);
+			cookie.setDomain("127.0.0.1");
+			res.addCookie(cookie);
+			service.hits(id);
+		}
+
 		try {
+
 			board = service.read(id);
+
 			File file = service.getFile(board.getId());
 			detailDto = convertToDetailDto(board, file);
 
@@ -95,6 +115,14 @@ public class BoardController {
 		}
 
 		return entity;
+	}
+
+	@GetMapping("/like")
+	public HttpStatus like(@RequestParam(name = "bid") int bid, HttpServletRequest req, HttpServletResponse res) {
+		HttpStatus status = null;
+		Cookie[] cookies = req.getCookies();
+
+		return status;
 	}
 
 	@PostMapping("/")
@@ -122,11 +150,11 @@ public class BoardController {
 		DetailDto detailDto = null;
 
 		if (file != null) {
-			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getTitle(),
+			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getContent(),
 					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
 					board.getDislikes(), file.getId(), file.getOriginname());
 		} else {
-			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getTitle(),
+			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getContent(),
 					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
 					board.getDislikes());
 		}

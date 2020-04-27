@@ -11,7 +11,7 @@
         <p class="detail-hits">조회수 {{ detail.hits }}</p>
       </div>
       <div class="post-wrap">
-        <p class="detail-content">{{ detail.content }}</p>
+        <p v-html="detail.content" class="detail-content"></p>
         <div class="recommend-wrap">
           <div class="likes">
             <p class="number">{{ detail.likes }}</p>
@@ -44,8 +44,6 @@ export default {
 <style lang="scss">
 @import '@/assets/scss/_variables.scss';
 .detail-wrap {
-  border-top: 2px solid $white-blue;
-  border-bottom: 2px solid $white-blue;
   padding: 20px;
   margin: 80px auto;
   &.laptop {
@@ -104,9 +102,6 @@ export default {
   display: inline-block;
   cursor: pointer;
 
-  &:hover {
-    border-color: $classic-blue;
-  }
   .comment {
     font-size: 13px;
     font-weight: bold;
@@ -116,12 +111,20 @@ export default {
   margin-right: 20px;
 
   .number {
-    color: green;
+    color: $classic-blue;
+  }
+
+  &:hover {
+    border-color: $classic-blue;
   }
 }
 .dislikes {
   .number {
     color: maroon;
+  }
+
+  &:hover {
+    border-color: maroon;
   }
 }
 .detail-bottom {

@@ -25,6 +25,8 @@ public interface BoardService {
 	public abstract int delete(Board board);
 
 	public abstract Board read(int id);
+	
+	public abstract void hits (int id);
 
 	public abstract int like(int id);
 

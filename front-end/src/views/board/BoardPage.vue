@@ -125,6 +125,7 @@ export default {
     },
     getBoardId (id) {
       this.fetchDetail(id)
+      this.fetchList(this.currentCategory)
     },
     fetchDetail (bid) {
       this.boardId = bid

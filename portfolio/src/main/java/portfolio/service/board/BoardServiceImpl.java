@@ -80,8 +80,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public Board read(int id) {
-		dao.updateReadCount(id);
 		return dao.select(id);
+	}
+	
+	@Override
+	public void hits(int id) {
+		dao.updateReadCount(id);
 	}
 
 	@Override
