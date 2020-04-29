@@ -13,11 +13,11 @@
       <div class="post-wrap">
         <p v-html="detail.content" class="detail-content"></p>
         <div class="recommend-wrap">
-          <div class="likes">
+          <div class="likes" @click="addRecommend(detail.board_id, 'like')">
             <p class="number">{{ detail.likes }}</p>
             <p class="comment">추천</p>
           </div>
-          <div class="dislikes">
+          <div class="dislikes" @click="addRecommend(detail.board_id, 'dislike')">
             <p class="number">{{ detail.dislikes }}</p>
             <p class="comment">비추</p>
           </div>
@@ -27,17 +27,55 @@
       </div>
       <div class="detail-bottom">
         <a class="write-btn" href="/board/write">글쓰기</a>
-        <a class="delete-btn" href="/board/delete">삭제</a>
-        <a class="modify-btn" href="/board/modify">수정</a>
+        <div>
+          <button class="delete-btn" @click="showModal = true">삭제</button>
+          <delete-modal v-if="showModal">
+            <template slot="header">
+              <h3>게시글 삭제</h3>
+            </template>
+            <template slot="body">
+              <span>비밀번호 </span>
+              <input class="pwd-input" type="text" v-model="password">
+            </template>
+            <template slot="footer">
+              <button class="modal-default-button" style="color:maroon;" @click="deleteBoard(detail.board_id)">삭제</button>
+              <button class="modal-default-button" @click="showModal = false">취소</button>
+            </template>
+          </delete-modal>
+        </div>
+        <router-link class="modify-btn" :to="{ name: 'BoardModify', params: detail}">수정</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Modal from '@/components/Modal'
 export default {
   name: 'DetailPage',
-  props: ['detail']
+  props: ['detail'],
+  data () {
+    return {
+      showModal: false,
+      password: ''
+    }
+  },
+  components: {
+    'delete-modal': Modal
+  },
+  methods: {
+    addRecommend (id, type) {
+      this.$emit('recommend', id, type)
+    },
+    deleteBoard (id) {
+      const pwd = this.password
+      if (!pwd) {
+        alert('비밀번호를 입력하세요')
+      } else {
+        this.$emit('delboard', id, pwd)
+      }
+    }
+  }
 }
 </script>
 
@@ -137,6 +175,19 @@ export default {
   border: 1px solid #eee;
   font-size: 12px;
   padding: 10px;
-  color: $classic-blue;
+  color: $classic-blue !important;
+  font-weight: normal;
+}
+.delete-btn {
+  height: 34px;
+  line-height: 13px;
+  background-color: #fff;
+}
+.pwd-input {
+  width: 70%;
+  margin-left: 10px;
+  border: 1px solid $white-blue;
+  padding: 4px;
+  line-height: 15px;
 }
 </style>

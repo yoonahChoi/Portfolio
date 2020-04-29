@@ -6,10 +6,12 @@ const request = (method, url, data) => {
   return axios({
     method,
     url: DOMAIN + url,
-    data
+    data,
+    withCredentials: true
   }).then(result => result.data)
-    .catch(result => {
-      console.log(result)
+    .catch(err => {
+      if (err.response.status === 304) alert('하루에 한번만 가능합니다')
+      else if (err.response.status === 403) alert('권한이 없습니다')
     })
 }
 
@@ -23,5 +25,12 @@ export const board = {
   },
   fetch (id) {
     return request('get', `/board/${id}`)
+  },
+  recommend (id, type) {
+    if (type === 'like') return request('get', `/board/like?bid=${id}`)
+    else if (type === 'dislike') return request('get', `/board/dislike?bid=${id}`)
+  },
+  delete (bid, password) {
+    return request('post', `/board/${bid}`, password)
   }
 }

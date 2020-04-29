@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.util.CookieGenerator;
 
 import com.mysql.jdbc.StringUtils;
 
@@ -87,7 +85,9 @@ public class BoardController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DetailDto> detail(@PathVariable int id, @CookieValue(value="HITCOOKIE", defaultValue="", required = false) String cookieValue, HttpServletResponse res) {
+	public ResponseEntity<DetailDto> detail(@PathVariable int id,
+			@CookieValue(value = "HITCOOKIE", defaultValue = "", required = false) String cookieValue,
+			HttpServletResponse res) {
 		ResponseEntity<DetailDto> entity = null;
 		Board board = null;
 		DetailDto detailDto = null;
@@ -96,7 +96,6 @@ public class BoardController {
 
 		if (StringUtils.indexOfIgnoreCase(cookieValue, bid) == -1) {
 			Cookie cookie = new Cookie("HITCOOKIE", cookieValue + bid);
-			cookie.setDomain("127.0.0.1");
 			res.addCookie(cookie);
 			service.hits(id);
 		}
@@ -118,27 +117,73 @@ public class BoardController {
 	}
 
 	@GetMapping("/like")
-	public HttpStatus like(@RequestParam(name = "bid") int bid, HttpServletRequest req, HttpServletResponse res) {
-		HttpStatus status = null;
-		Cookie[] cookies = req.getCookies();
+	public ResponseEntity<HttpStatus> like(@RequestParam(name = "bid") int bid,
+			@CookieValue(value = "LIKECOOKIE", defaultValue = "", required = false) String cookieValue,
+			HttpServletResponse res) {
+		ResponseEntity<HttpStatus> status = null;
+
+		String id = "|" + bid;
+
+		if (StringUtils.indexOfIgnoreCase(cookieValue, id) == -1) {
+			Cookie cookie = new Cookie("LIKECOOKIE", cookieValue + id);
+			res.addCookie(cookie);
+			service.like(bid);
+		} else {
+			status = new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
+		}
+		return status;
+	}
+
+	@GetMapping("/dislike")
+	public ResponseEntity<HttpStatus> dislike(@RequestParam(name = "bid") int bid,
+			@CookieValue(value = "DISLIKECOOKIE", defaultValue = "", required = false) String cookieValue,
+			HttpServletResponse res) {
+		ResponseEntity<HttpStatus> status = null;
+
+		String id = "|" + bid;
+
+		if (StringUtils.indexOfIgnoreCase(cookieValue, id) == -1) {
+			Cookie cookie = new Cookie("DISLIKECOOKIE", cookieValue + id);
+			res.addCookie(cookie);
+			service.dislike(bid);
+		} else {
+			status = new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
+		}
 
 		return status;
 	}
 
 	@PostMapping("/")
-	public HttpStatus write(MultipartHttpServletRequest request) {
+	public ResponseEntity<HttpStatus> write(MultipartHttpServletRequest req) {
 		Board board = new Board();
 
-		board.setCategory_id(Integer.parseInt(request.getParameter("categoryId")));
-		board.setWriter(request.getParameter("writer"));
-		board.setPassword(request.getParameter("password"));
-		board.setTitle(request.getParameter("title"));
-		board.setContent(request.getParameter("content"));
-		MultipartFile file = request.getFile("file");
+		board.setCategory_id(Integer.parseInt(req.getParameter("categoryId")));
+		board.setWriter(req.getParameter("writer"));
+		board.setPassword(req.getParameter("password"));
+		board.setTitle(req.getParameter("title"));
+		board.setContent(req.getParameter("content"));
+		MultipartFile file = req.getFile("file");
 
 		service.write(board, file);
 
-		return HttpStatus.CREATED;
+		return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
+	}
+
+	@PostMapping("/{bid}")
+	public ResponseEntity<HttpStatus> remove(@PathVariable int bid, HttpServletRequest req) {
+		ResponseEntity<HttpStatus> status = null;
+
+		Board board = service.read(bid);
+		String password = board.getPassword();
+
+		if (password.equals(req.getParameter("password"))) {
+			service.delete(board);
+			status = new ResponseEntity<HttpStatus>(HttpStatus.OK);
+		} else {
+			status = new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
+		}
+
+		return status;
 	}
 
 	private ListDto convertToListDto(Board board) {

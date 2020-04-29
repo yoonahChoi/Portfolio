@@ -43,6 +43,16 @@ export default {
       file: ''
     }
   },
+  created () {
+    const params = this.$route.params
+    this.writer = params.writer
+    this.title = params.title
+    this.content = params.content
+    this.file = params.file
+
+    if (!params) console.log('등록')
+    else console.log('수정')
+  },
   methods: {
     saveContent () {
       alert('임시 저장 됐습니다.')

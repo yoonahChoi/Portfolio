@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrap">
     <div class="board-wrap">
-      <board-detail v-if="boardId > 0" :detail="detail"></board-detail>
+      <board-detail v-if="boardId > 0" :detail="detail" @recommend="addRecommend" @delboard="deleteBoard"></board-detail>
       <div class="board-top" :class="$mq">
         <div class="category-wrap">
           <ul class="category-list" :class="$mq">
@@ -85,8 +85,8 @@ export default {
       detail: '',
       pageStartList: [],
       pageList: [],
-      selectedPage: 0,
-      pageSize: 5
+      pageSize: 5,
+      selectedPage: 0
     }
   },
   created () {
@@ -132,6 +132,21 @@ export default {
       board.fetch(bid)
         .then(data => {
           this.detail = data
+        })
+    },
+    addRecommend (id, type) {
+      board.recommend(id, type)
+        .then(res => {
+          this.fetchDetail(id)
+        })
+    },
+    deleteBoard (bid, password) {
+      const form = new FormData()
+      form.append('password', password)
+      board.delete(bid, form)
+        .then(() => {
+          this.boardId = 0
+          this.fetchList(this.currentCategory)
         })
     }
   }
