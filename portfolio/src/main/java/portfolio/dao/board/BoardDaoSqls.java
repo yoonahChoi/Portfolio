@@ -7,7 +7,7 @@ public class BoardDaoSqls {
 	public static final String SELECT_LIST_BY_CATEGORY_ID = "SELECT board.id, name AS category, title, content, writer, reg_date, hits, likes, dislikes "
 			+ "FROM board JOIN category ON board.category_id = category.id WHERE category.id = :category_id ORDER BY id DESC limit :start, :limit;";
 
-	public static final String SELECT_BOARD = "SELECT board.id, name as category, title, content, writer, password, reg_date, hits, likes, dislikes "
+	public static final String SELECT_BOARD = "SELECT board.id, category_id, name as category, title, content, writer, password, reg_date, hits, likes, dislikes "
 			+ "FROM board JOIN category ON board.category_id = category.id WHERE board.id = :boardNo;";
 
 	public static final String SELECT_COUNT = "SELECT count(*) FROM board;";

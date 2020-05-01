@@ -105,9 +105,9 @@ export default {
     },
     fetchList (index, start = 0) {
       board.fetchList(index, start)
-        .then(data => {
-          this.pageStartList = paging(data.pageStartList, this.pageSize)
-          this.boardList = data.list
+        .then(res => {
+          this.pageStartList = paging(res.data.pageStartList, this.pageSize)
+          this.boardList = res.data.list
           this.changePageBlock(this.category[this.currentCategory].pageBlock)
         })
     },
@@ -130,13 +130,13 @@ export default {
     fetchDetail (bid) {
       this.boardId = bid
       board.fetch(bid)
-        .then(data => {
-          this.detail = data
+        .then(res => {
+          this.detail = res.data
         })
     },
     addRecommend (id, type) {
       board.recommend(id, type)
-        .then(res => {
+        .then(() => {
           this.fetchDetail(id)
         })
     },
@@ -144,7 +144,8 @@ export default {
       const form = new FormData()
       form.append('password', password)
       board.delete(bid, form)
-        .then(() => {
+        .then(res => {
+          if (res.status === 200) alert('삭제 완료')
           this.boardId = 0
           this.fetchList(this.currentCategory)
         })

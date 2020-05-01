@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int edit(Board board, MultipartFile file) {
-		if (!file.getOriginalFilename().isEmpty()) {
+		if (file != null) {
 			File fileDb = dao.selectFile(board.getId());
 
 			if (fileDb != null) {

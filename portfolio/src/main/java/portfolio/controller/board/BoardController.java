@@ -120,7 +120,6 @@ public class BoardController {
 	public ResponseEntity<HttpStatus> like(@RequestParam(name = "bid") int bid,
 			@CookieValue(value = "LIKECOOKIE", defaultValue = "", required = false) String cookieValue,
 			HttpServletResponse res) {
-		ResponseEntity<HttpStatus> status = null;
 
 		String id = "|" + bid;
 
@@ -129,16 +128,15 @@ public class BoardController {
 			res.addCookie(cookie);
 			service.like(bid);
 		} else {
-			status = new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
+			return new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
 		}
-		return status;
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
 	}
 
 	@GetMapping("/dislike")
 	public ResponseEntity<HttpStatus> dislike(@RequestParam(name = "bid") int bid,
 			@CookieValue(value = "DISLIKECOOKIE", defaultValue = "", required = false) String cookieValue,
 			HttpServletResponse res) {
-		ResponseEntity<HttpStatus> status = null;
 
 		String id = "|" + bid;
 
@@ -147,16 +145,18 @@ public class BoardController {
 			res.addCookie(cookie);
 			service.dislike(bid);
 		} else {
-			status = new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
+			return new ResponseEntity<HttpStatus>(HttpStatus.NOT_MODIFIED);
 		}
 
-		return status;
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
 	}
 
 	@PostMapping("/")
 	public ResponseEntity<HttpStatus> write(MultipartHttpServletRequest req) {
 		Board board = new Board();
+		Board dbBoard = null;
 
+		board.setId(Integer.parseInt(req.getParameter("boardId")));
 		board.setCategory_id(Integer.parseInt(req.getParameter("categoryId")));
 		board.setWriter(req.getParameter("writer"));
 		board.setPassword(req.getParameter("password"));
@@ -164,26 +164,36 @@ public class BoardController {
 		board.setContent(req.getParameter("content"));
 		MultipartFile file = req.getFile("file");
 
-		service.write(board, file);
+		if (board.getId() > 0)
+			dbBoard = service.read(board.getId());
+
+		if (dbBoard != null) {
+			if (board.getPassword().equals(dbBoard.getPassword())) {
+				service.edit(board, file);
+				return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
+			}
+		} else {
+			service.write(board, file);
+		}
 
 		return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
 	}
 
 	@PostMapping("/{bid}")
 	public ResponseEntity<HttpStatus> remove(@PathVariable int bid, HttpServletRequest req) {
-		ResponseEntity<HttpStatus> status = null;
 
 		Board board = service.read(bid);
 		String password = board.getPassword();
 
 		if (password.equals(req.getParameter("password"))) {
 			service.delete(board);
-			status = new ResponseEntity<HttpStatus>(HttpStatus.OK);
 		} else {
-			status = new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
 		}
 
-		return status;
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
 	}
 
 	private ListDto convertToListDto(Board board) {
@@ -195,13 +205,13 @@ public class BoardController {
 		DetailDto detailDto = null;
 
 		if (file != null) {
-			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getContent(),
-					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
-					board.getDislikes(), file.getId(), file.getOriginname());
+			detailDto = new DetailDto(board.getId(), board.getCategory_id(), board.getCategory(), board.getTitle(),
+					board.getContent(), board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(),
+					board.getLikes(), board.getDislikes(), file.getId(), file.getOriginname());
 		} else {
-			detailDto = new DetailDto(board.getId(), board.getCategory(), board.getTitle(), board.getContent(),
-					board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(), board.getLikes(),
-					board.getDislikes());
+			detailDto = new DetailDto(board.getId(), board.getCategory_id(), board.getCategory(), board.getTitle(),
+					board.getContent(), board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(),
+					board.getLikes(), board.getDislikes());
 		}
 
 		return detailDto;

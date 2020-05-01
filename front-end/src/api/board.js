@@ -8,7 +8,7 @@ const request = (method, url, data) => {
     url: DOMAIN + url,
     data,
     withCredentials: true
-  }).then(result => result.data)
+  }).then(result => result)
     .catch(err => {
       if (err.response.status === 304) alert('하루에 한번만 가능합니다')
       else if (err.response.status === 403) alert('권한이 없습니다')

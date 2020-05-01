@@ -13,7 +13,6 @@
         <div class="side-bar" :class="[{open: isOpen},$mq]">
           <nav class="nav" :class="$mq">
             <ul class="nav-list" :class="$mq">
-              <li><router-link class="nav-link" to="/project">프로젝트</router-link></li>
               <li><router-link class="nav-link" to="/board">게시판</router-link></li>
               <li><router-link class="nav-link" to="/planner">일정관리</router-link></li>
             </ul>

@@ -36,6 +36,7 @@ export default {
   data () {
     return {
       selected: '',
+      boardId: 0,
       writer: '',
       password: '',
       title: '',
@@ -45,13 +46,12 @@ export default {
   },
   created () {
     const params = this.$route.params
+    this.boardId = params.board_id
+    this.selected = params.category_id === 'undefined' ? params.category_id : ''
     this.writer = params.writer
     this.title = params.title
     this.content = params.content
-    this.file = params.file
-
-    if (!params) console.log('등록')
-    else console.log('수정')
+    this.file = params.filename
   },
   methods: {
     saveContent () {
@@ -61,6 +61,7 @@ export default {
       if (this.formValidate()) return
 
       const form = new FormData()
+      form.append('boardId', this.boardId)
       form.append('categoryId', this.selected)
       form.append('writer', this.writer)
       form.append('password', this.password)
@@ -72,11 +73,11 @@ export default {
       }
 
       board.post(form)
-        .then(() => {
-          alert('게시글 등록 성공')
+        .then(res => {
+          if (res.status === 204) alert('수정 완료')
+          else if (res.status === 201) alert('게시글 등록 성공')
           this.$router.push('/board')
         }).catch(err => {
-          alert('게시글 등록 실패')
           console.log(err)
         })
     },

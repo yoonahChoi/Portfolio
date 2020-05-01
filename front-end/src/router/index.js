@@ -12,10 +12,6 @@ const routes = [
     name: 'Home',
     component: HomePage
   },
-  {
-    path: '/project',
-    component: () => import('@/views/ProjectPage.vue')
-  },
   ...board,
   {
     path: '/planner',

@@ -2,6 +2,7 @@ package portfolio.model.board;
 
 public class DetailDto {
 	private int board_id;
+	private int category_id;
 	private String category;
 	private String title;
 	private String content;
@@ -13,9 +14,10 @@ public class DetailDto {
 	private int file_id;
 	private String filename;
 
-	public DetailDto(int board_id, String category, String title, String content, String writer, String reg_date,
-			int hits, int likes, int dislikes) {
+	public DetailDto(int board_id, int category_id, String category, String title, String content, String writer,
+			String reg_date, int hits, int likes, int dislikes) {
 		this.board_id = board_id;
+		this.category_id = category_id;
 		this.category = category;
 		this.title = title;
 		this.content = content;
@@ -26,9 +28,10 @@ public class DetailDto {
 		this.dislikes = dislikes;
 	}
 
-	public DetailDto(int board_id, String category, String title, String content, String writer, String reg_date,
-			int hits, int likes, int dislikes, int file_id, String filename) {
+	public DetailDto(int board_id, int category_id, String category, String title, String content, String writer,
+			String reg_date, int hits, int likes, int dislikes, int file_id, String filename) {
 		this.board_id = board_id;
+		this.category_id = category_id;
 		this.category = category;
 		this.title = title;
 		this.content = content;
@@ -47,6 +50,14 @@ public class DetailDto {
 
 	public void setBoard_id(int board_id) {
 		this.board_id = board_id;
+	}
+
+	public int getCategory_id() {
+		return category_id;
+	}
+
+	public void setCategory_id(int category_id) {
+		this.category_id = category_id;
 	}
 
 	public String getCategory() {
@@ -131,9 +142,10 @@ public class DetailDto {
 
 	@Override
 	public String toString() {
-		return "DetailDto [board_id=" + board_id + ", category=" + category + ", title=" + title + ", content="
-				+ content + ", writer=" + writer + ", reg_date=" + reg_date + ", hits=" + hits + ", likes=" + likes
-				+ ", dislikes=" + dislikes + ", file_id=" + file_id + ", filename=" + filename + "]";
+		return "DetailDto [board_id=" + board_id + ", category_id=" + category_id + ", category=" + category
+				+ ", title=" + title + ", content=" + content + ", writer=" + writer + ", reg_date=" + reg_date
+				+ ", hits=" + hits + ", likes=" + likes + ", dislikes=" + dislikes + ", file_id=" + file_id
+				+ ", filename=" + filename + "]";
 	}
 
 }
