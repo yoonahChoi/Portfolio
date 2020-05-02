@@ -23,6 +23,10 @@
           </div>
         </div>
       </div>
+      <div class="file-wrap">
+        <p class="file-title">첨부파일</p>
+        <p class="download" @click="downloadFile">{{ detail.filename }}</p>
+      </div>
       <div class="comment-wrap">
       </div>
       <div class="detail-bottom">
@@ -74,6 +78,9 @@ export default {
       } else {
         this.$emit('delboard', id, pwd)
       }
+    },
+    downloadFile () {
+      this.$emit('download', this.detail.board_id)
     }
   }
 }
@@ -189,5 +196,28 @@ export default {
   border: 1px solid $white-blue;
   padding: 4px;
   line-height: 15px;
+}
+.file-wrap {
+  background-color: #eee;
+  padding: 10px 15px;
+  font-size: 14px;
+
+  & p {
+    display: inline-block;
+  }
+}
+.file-title {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid $white-blue;
+}
+.download {
+  font-size: 16px;
+
+  &:hover {
+    color: $classic-blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }
 </style>

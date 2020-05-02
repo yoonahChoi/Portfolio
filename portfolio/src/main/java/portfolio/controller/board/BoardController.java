@@ -1,5 +1,10 @@
 package portfolio.controller.board;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,11 +36,10 @@ import com.mysql.jdbc.StringUtils;
 
 import portfolio.model.board.Board;
 import portfolio.model.board.DetailDto;
-import portfolio.model.board.File;
+import portfolio.model.board.BoardFile;
 import portfolio.model.board.ListDto;
 import portfolio.service.board.BoardService;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/board")
 public class BoardController {
@@ -104,7 +110,7 @@ public class BoardController {
 
 			board = service.read(id);
 
-			File file = service.getFile(board.getId());
+			BoardFile file = service.getFile(board.getId());
 			detailDto = convertToDetailDto(board, file);
 
 			entity = new ResponseEntity<DetailDto>(detailDto, HttpStatus.OK);
@@ -125,6 +131,7 @@ public class BoardController {
 
 		if (StringUtils.indexOfIgnoreCase(cookieValue, id) == -1) {
 			Cookie cookie = new Cookie("LIKECOOKIE", cookieValue + id);
+			cookie.setMaxAge(60 * 60 * 24);
 			res.addCookie(cookie);
 			service.like(bid);
 		} else {
@@ -142,6 +149,7 @@ public class BoardController {
 
 		if (StringUtils.indexOfIgnoreCase(cookieValue, id) == -1) {
 			Cookie cookie = new Cookie("DISLIKECOOKIE", cookieValue + id);
+			cookie.setMaxAge(60 * 60 * 24);
 			res.addCookie(cookie);
 			service.dislike(bid);
 		} else {
@@ -196,18 +204,48 @@ public class BoardController {
 		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
 	}
 
+	@GetMapping("/download")
+	public ResponseEntity<ByteArrayResource> download(@RequestParam(name = "id") int id, HttpServletResponse res) {
+		BoardFile dbFile = service.getFile(id);
+
+		String fileName = dbFile.getOriginname() + dbFile.getType();
+		StringBuilder sb = new StringBuilder("c:/upload/");
+		sb.append(dbFile.getFilename() + dbFile.getType());
+		String saveFileName = sb.toString();
+
+		File file = new File(saveFileName);
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.add("Content-Disposition", "attachment; filename=\"" + fileName + "\";");
+		headers.add("Content-Transfer-Encoding", "binary");
+		headers.add("Pragma", "no-cache;");
+		headers.add("Expires", "-1;");
+
+		Path path = Paths.get(saveFileName);
+		ByteArrayResource resource = null;
+
+		try {
+			resource = new ByteArrayResource(Files.readAllBytes(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok().headers(headers).contentLength(file.length())
+				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
+	}
+
 	private ListDto convertToListDto(Board board) {
 		ListDto listDto = modelMapper.map(board, ListDto.class);
 		return listDto;
 	}
 
-	private DetailDto convertToDetailDto(Board board, File file) {
+	private DetailDto convertToDetailDto(Board board, BoardFile file) {
 		DetailDto detailDto = null;
 
 		if (file != null) {
 			detailDto = new DetailDto(board.getId(), board.getCategory_id(), board.getCategory(), board.getTitle(),
 					board.getContent(), board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(),
-					board.getLikes(), board.getDislikes(), file.getId(), file.getOriginname());
+					board.getLikes(), board.getDislikes(), file.getId(), file.getOriginname() + file.getType());
 		} else {
 			detailDto = new DetailDto(board.getId(), board.getCategory_id(), board.getCategory(), board.getTitle(),
 					board.getContent(), board.getWriter(), board.getReg_date().substring(0, 16), board.getHits(),

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import portfolio.dao.board.BoardDao;
 import portfolio.model.board.Board;
-import portfolio.model.board.File;
+import portfolio.model.board.BoardFile;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -59,7 +59,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int edit(Board board, MultipartFile file) {
 		if (file != null) {
-			File fileDb = dao.selectFile(board.getId());
+			BoardFile fileDb = dao.selectFile(board.getId());
 
 			if (fileDb != null) {
 				dao.deleteFile(fileDb.getId());
@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int delete(Board board) {
-		File fileDb = dao.selectFile(board.getId());
+		BoardFile fileDb = dao.selectFile(board.getId());
 		if (fileDb != null) {
 			dao.deleteFile(fileDb.getId());
 		}
@@ -99,7 +99,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public File getFile(int board_id) {
+	public BoardFile getFile(int board_id) {
 		return dao.selectFile(board_id);
 
 	}
@@ -112,7 +112,7 @@ public class BoardServiceImpl implements BoardService {
 			String saveFileName = convertFileName(extensionName);
 
 			writeFile(file, saveFileName);
-			dao.insertFile(new File(board_id, originFileName, saveFileName, extensionName));
+			dao.insertFile(new BoardFile(board_id, originFileName, saveFileName, extensionName));
 
 		} catch (IOException e) {
 			e.printStackTrace();

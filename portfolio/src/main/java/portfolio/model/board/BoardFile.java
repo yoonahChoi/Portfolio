@@ -1,6 +1,6 @@
 package portfolio.model.board;
 
-public class File {
+public class BoardFile {
 	private int id;
 	private int board_id;
 	private String originname;
@@ -8,11 +8,11 @@ public class File {
 	private String type;
 	private String reg_date;
 	
-	public File() {
+	public BoardFile() {
 		
 	}
 
-	public File(int board_id, String originname, String filename, String type) {
+	public BoardFile(int board_id, String originname, String filename, String type) {
 		this.board_id = board_id;
 		this.originname = originname;
 		this.filename = filename;

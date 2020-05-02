@@ -32,5 +32,35 @@ export const board = {
   },
   delete (bid, password) {
     return request('post', `/board/${bid}`, password)
+  },
+  file (id) {
+    return axios({
+      method: 'get',
+      url: `http://localhost:8080/portfolio/board/download?id=${id}`,
+      responseType: 'arraybuffer'
+    }).then(res => {
+      const blob = new Blob([res.data])
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const contentDisposition = res.headers['content-disposition']
+
+      let fileName = 'unknown'
+      if (contentDisposition) {
+        const [fileNameMatch] = contentDisposition.split(';').filter(str => str.includes('filename'))
+        if (fileNameMatch) {
+          [, fileName] = fileNameMatch.split('=')
+        }
+        fileName = fileName.replace(/^"(.*)"$/, '$1')
+      }
+
+      link.href = url
+      link.setAttribute('download', `${fileName}`)
+      link.style.cssText = 'display:none'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }).catch(err => {
+      console.log(err)
+    })
   }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import portfolio.model.board.Board;
-import portfolio.model.board.File;
+import portfolio.model.board.BoardFile;
 
 public interface BoardService {
 	public static final Integer LIMIT = 10;
@@ -34,5 +34,5 @@ public interface BoardService {
 	
 	public abstract void upload(MultipartFile file, int board_id);
 	
-	public abstract File getFile(int board_id);
+	public abstract BoardFile getFile(int board_id);
 }

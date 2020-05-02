@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrap">
     <div class="board-wrap">
-      <board-detail v-if="boardId > 0" :detail="detail" @recommend="addRecommend" @delboard="deleteBoard"></board-detail>
+      <board-detail v-if="boardId > 0" :detail="detail" @recommend="addRecommend" @delboard="deleteBoard" @download="download"></board-detail>
       <div class="board-top" :class="$mq">
         <div class="category-wrap">
           <ul class="category-list" :class="$mq">
@@ -149,6 +149,9 @@ export default {
           this.boardId = 0
           this.fetchList(this.currentCategory)
         })
+    },
+    download (id) {
+      board.file(id)
     }
   }
 }

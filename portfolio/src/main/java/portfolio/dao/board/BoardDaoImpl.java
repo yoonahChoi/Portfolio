@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import portfolio.model.board.Board;
-import portfolio.model.board.File;
+import portfolio.model.board.BoardFile;
 
 import static portfolio.dao.board.BoardDaoSqls.*;
 
@@ -24,7 +24,7 @@ import static portfolio.dao.board.BoardDaoSqls.*;
 public class BoardDaoImpl implements BoardDao {
 	private NamedParameterJdbcTemplate jdbc;
 	private RowMapper<Board> rowMapper = BeanPropertyRowMapper.newInstance(Board.class);
-	private RowMapper<File> rowMapperFile = BeanPropertyRowMapper.newInstance(File.class);
+	private RowMapper<BoardFile> rowMapperFile = BeanPropertyRowMapper.newInstance(BoardFile.class);
 
 	public BoardDaoImpl(DataSource datasource) {
 		this.jdbc = new NamedParameterJdbcTemplate(datasource);
@@ -127,7 +127,7 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public File selectFile(Integer board_id) {
+	public BoardFile selectFile(Integer board_id) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("board_id", board_id);
 		try {
@@ -138,7 +138,7 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public int insertFile(File file) {
+	public int insertFile(BoardFile file) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(file);
 		return jdbc.update(INSERT_FILE, params);
 	}

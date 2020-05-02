@@ -3,7 +3,7 @@ package portfolio.dao.board;
 import java.util.List;
 
 import portfolio.model.board.Board;
-import portfolio.model.board.File;
+import portfolio.model.board.BoardFile;
 
 public interface BoardDao {
 	
@@ -18,14 +18,14 @@ public interface BoardDao {
 	
 	public abstract int getCountByCategory(Integer category_id);
 	
-	public abstract File selectFile(Integer board_id);
+	public abstract BoardFile selectFile(Integer board_id);
 	
 	public abstract int getLastId(String table);
 	
 	//Create
 	public abstract int insert(Board board);
 	
-	public abstract int insertFile(File file);
+	public abstract int insertFile(BoardFile file);
 	
 	//Update
 	public abstract int update(Board board);
