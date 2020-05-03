@@ -77,8 +77,6 @@ export default {
           if (res.status === 204) alert('수정 완료')
           else if (res.status === 201) alert('게시글 등록 성공')
           this.$router.push('/board')
-        }).catch(err => {
-          console.log(err)
         })
     },
     formValidate () {
