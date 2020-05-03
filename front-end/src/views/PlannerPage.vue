@@ -1,6 +1,8 @@
 <template>
   <div class="content-wrap">
-    <h2>일정관리 페이지</h2>
+    <div class="dev">
+      <p>개발중입니다!</p>
+    </div>
   </div>
 </template>
 
@@ -11,5 +13,14 @@ export default {
 </script>
 
 <style>
-
+.dev {
+  margin: 0 auto;
+  width: 1000px;
+  height: 300px;
+  text-align: center;
+}
+.dev p {
+  margin-top: 300px;
+  font-size: 40px;
+}
 </style>

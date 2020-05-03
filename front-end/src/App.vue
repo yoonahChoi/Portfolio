@@ -18,7 +18,6 @@
             </ul>
           </nav>
           <div class="login-wrap" :class="$mq">
-            <a href="#" class="login-link" >로그인</a>
           </div>
         </div>
       </div>

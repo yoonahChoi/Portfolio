@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import portfolio.controller.board.BoardController;
+import portfolio.controller.BoardController;
 import portfolio.dao.board.BoardDao;
 import portfolio.dao.board.BoardDaoImpl;
 import portfolio.service.board.BoardService;

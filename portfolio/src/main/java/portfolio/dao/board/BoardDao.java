@@ -22,6 +22,14 @@ public interface BoardDao {
 	
 	public abstract int getLastId(String table);
 	
+	public abstract List<Board> searchList(String column, String keyword, Integer start, Integer limit);
+	
+	public abstract List<Board> searchAllList(String keyword, Integer start, Integer limit);
+	
+	public abstract int getSearchCount(String column, String keyword);
+	
+	public abstract int getSearchAllCount(String keyword);
+	
 	//Create
 	public abstract int insert(Board board);
 	

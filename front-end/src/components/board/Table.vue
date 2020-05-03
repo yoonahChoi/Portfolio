@@ -43,6 +43,7 @@ export default {
   methods: {
     emitBoardId (id) {
       this.$emit('child', id)
+      this.$emit('scroll')
     }
   }
 }

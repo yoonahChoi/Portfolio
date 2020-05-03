@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import portfolio.board.config.BoardTestConfiguration;
-import portfolio.controller.board.BoardController;
+import portfolio.controller.BoardController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = BoardTestConfiguration.class)

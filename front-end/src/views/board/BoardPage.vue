@@ -9,23 +9,25 @@
           </ul>
         </div>
         <div class="search-wrap" :class="$mq">
-          <form @submit.prevent="" action="">
-            <select class="search-select" name="search_target" id="">
+          <form @submit.prevent="search">
+            <select class="search-select" name="search_target" v-model="selected">
               <option value="title">제목</option>
               <option value="title_content">제목+내용</option>
               <option value="content">내용</option>
+              <option value="writer">작성자</option>
             </select>
-            <input class="search-input" type="text" :class="$mq">
+            <input v-model="keyword" class="search-input" type="text" :class="$mq">
             <button class="search-btn" type="submit">검색</button>
           </form>
         </div>
       </div>
-      <board-table :list="boardList" @child="getBoardId"></board-table>
+      <board-table :list="boardList" @child="getBoardId" @scroll="scrollToTop"></board-table>
       <div class="board-bottom">
           <div class="board-addition">
+            <div v-if="searchMore" class="search-more" @click="fetchSearchList">계속 검색</div>
             <a class="write-btn" href="/board/write">글쓰기</a>
           </div>
-          <div class="board-page">
+          <div v-if="pageStartList.length" class="board-page">
             <span v-show="category[currentCategory].pageBlock > 0" class="page-pre" href="#" @click="changePageList('pre')">&lt;</span>
             <ul class="page-list">
               <li v-for="(item, index) in pageList" :key="index" @click="getList(index, item)">
@@ -86,7 +88,12 @@ export default {
       pageStartList: [],
       pageList: [],
       pageSize: 5,
-      selectedPage: 0
+      selectedPage: 0,
+      searchMore: false,
+      searchStart: 0,
+      searchStartList: [],
+      selected: 'title',
+      keyword: ''
     }
   },
   created () {
@@ -97,6 +104,8 @@ export default {
       this.selectedPage = 0
       this.category[index].pageBlock = 0
       this.currentCategory = index
+      this.searchMore = false
+      this.keyword = ''
       this.fetchList(index)
     },
     getList (index, start) {
@@ -121,7 +130,7 @@ export default {
         this.changePageBlock(++this.category[this.currentCategory].pageBlock)
       }
       this.selectedPage = 0
-      this.fetchData(this.currentCategory, this.pageList[0])
+      this.fetchList(this.currentCategory, this.pageList[0])
     },
     getBoardId (id) {
       this.fetchDetail(id)
@@ -152,6 +161,27 @@ export default {
     },
     download (id) {
       board.file(id)
+    },
+    search () {
+      this.searchStart = 0
+      this.searchMore = true
+      this.fetchSearchList()
+    },
+    fetchSearchList () {
+      board.search(this.keyword, this.selected, this.searchStart)
+        .then(res => {
+          this.boardList = res.data.list
+          this.pageStartList = []
+
+          if (res.data.pageStartList.length > this.searchStart) {
+            this.searchStart++
+          } else {
+            this.searchMore = false
+          }
+        })
+    },
+    scrollToTop () {
+      window.scrollTo(0, 0)
     }
   }
 }
@@ -289,5 +319,17 @@ export default {
   font-size: 12px;
   padding: 10px;
   color: $classic-blue;
+}
+.search-more {
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  font-size: 12px;
+  padding: 10px;
+  color: $classic-blue;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $classic-blue;
+  }
 }
 </style>

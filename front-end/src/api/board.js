@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const DOMAIN = 'http://localhost:8080/portfolio'
 
-const request = (method, url, data) => {
+export const request = (method, url, data) => {
   return axios({
     method,
     url: DOMAIN + url,
@@ -62,5 +62,8 @@ export const board = {
     }).catch(err => {
       console.log(err)
     })
+  },
+  search (keyword, type, start) {
+    return request('get', `/board/search/${keyword}?type=${type}&start=${start}`)
   }
 }

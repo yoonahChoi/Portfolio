@@ -82,7 +82,7 @@ public class BoardServiceImpl implements BoardService {
 	public Board read(int id) {
 		return dao.select(id);
 	}
-	
+
 	@Override
 	public void hits(int id) {
 		dao.updateReadCount(id);
@@ -102,6 +102,34 @@ public class BoardServiceImpl implements BoardService {
 	public BoardFile getFile(int board_id) {
 		return dao.selectFile(board_id);
 
+	}
+
+	@Override
+	public List<Board> search(String column, String keyword, Integer start) {
+		keyword = "%" + keyword + "%";
+		List<Board> list = dao.searchList(column, keyword, start, BoardService.LIMIT);
+		ifTodayChangeRegDate(list);
+		return list;
+	}
+
+	@Override
+	public List<Board> search(String keyword, Integer start) {
+		keyword = "%" + keyword + "%";
+		List<Board> list = dao.searchAllList(keyword, start, BoardService.LIMIT);
+		ifTodayChangeRegDate(list);
+		return list;
+	}
+
+	@Override
+	public int searchCount(String column, String keyword) {
+		keyword = "%" + keyword + "%";
+		return dao.getSearchCount(column, keyword);
+	}
+
+	@Override
+	public int searchCount(String keyword) {
+		keyword = "%" + keyword + "%";
+		return dao.getSearchAllCount(keyword);
 	}
 
 	public void upload(MultipartFile file, int board_id) {

@@ -1,4 +1,4 @@
-package portfolio.controller.board;
+package portfolio.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +57,6 @@ public class BoardController {
 		ResponseEntity<Map<String, Object>> entity = null;
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Board> list = null;
-		List<Integer> pageStartList = new ArrayList<>();
 		int count = 0;
 
 		try {
@@ -69,16 +68,37 @@ public class BoardController {
 				count = service.count(cid);
 			}
 
-			int pageCount = count / BoardService.LIMIT;
+			resultMap.put("pageStartList", paging(count));
+			resultMap.put("list", list.stream().map(this::convertToListDto).collect(Collectors.toList()));
 
-			if (count % BoardService.LIMIT > 0)
-				pageCount++;
+			entity = new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+		}
 
-			for (int i = 0; i < pageCount; i++) {
-				pageStartList.add(i * BoardService.LIMIT);
+		return entity;
+	}
+
+	@GetMapping("search/{keyword}")
+	public ResponseEntity<Map<String, Object>> search(@PathVariable String keyword,
+			@RequestParam(name = "type") String type,
+			@RequestParam(name = "start", required = false, defaultValue = "0") int start) {
+
+		ResponseEntity<Map<String, Object>> entity = null;
+		Map<String, Object> resultMap = new HashMap<>();
+		List<Board> list = null;
+		int count = 0;
+
+		try {
+			if ("title_content".equals(type)) {
+				list = service.search(keyword, start);
+				count = service.searchCount(keyword);
+			} else {
+				list = service.search(type, keyword, start);
+				count = service.searchCount(type, keyword);
 			}
-
-			resultMap.put("pageStartList", pageStartList);
+			resultMap.put("pageStartList", paging(count));
 			resultMap.put("list", list.stream().map(this::convertToListDto).collect(Collectors.toList()));
 
 			entity = new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -254,6 +274,21 @@ public class BoardController {
 
 		return detailDto;
 
+	}
+
+	private List<Integer> paging(int count) {
+		List<Integer> pageStartList = new ArrayList<>();
+
+		int pageCount = count / BoardService.LIMIT;
+
+		if (count % BoardService.LIMIT > 0)
+			pageCount++;
+
+		for (int i = 0; i < pageCount; i++) {
+			pageStartList.add(i * BoardService.LIMIT);
+		}
+
+		return pageStartList;
 	}
 
 }
