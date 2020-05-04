@@ -30,7 +30,7 @@
       <div class="comment-wrap">
       </div>
       <div class="detail-bottom">
-        <a class="write-btn" href="/board/write">글쓰기</a>
+        <router-link class="write-btn" to="/board/write">글쓰기</router-link>
         <div>
           <button class="delete-btn" @click="showModal = true">삭제</button>
           <delete-modal v-if="showModal">

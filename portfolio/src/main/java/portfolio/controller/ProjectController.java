@@ -13,7 +13,7 @@ import portfolio.model.project.Project;
 import portfolio.service.project.ProjectService;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 public class ProjectController {
 
 	@Autowired

@@ -41,7 +41,7 @@ import portfolio.model.board.ListDto;
 import portfolio.service.board.BoardService;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 public class BoardController {
 	@Autowired
 	private BoardService service;

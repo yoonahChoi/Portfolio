@@ -15,7 +15,7 @@
         <vue-editor id="editor" v-model="content"></vue-editor>
         <input type="file" class="file-input" name="file" v-on:change="handleFileUpload($event)">
         <div class="btn-wrap">
-          <a href="/board" class="cancel-btn">취소</a>
+          <router-link to="/board" class="cancel-btn">취소</router-link>
           <button type="submit" class="submit-btn" :class="$mq">등록</button>
           <!-- <button @click.prevent="saveContent" class="temporary-btn" :class="$mq">임시저장</button> -->
         </div>

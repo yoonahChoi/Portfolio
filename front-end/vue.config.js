@@ -10,5 +10,6 @@ module.exports = {
         '@': path.join(__dirname, 'src/')
       }
     }
-  }
+  },
+  outputDir: path.resolve(__dirname, "../portfolio/src/main/resources/static/dist")
 }

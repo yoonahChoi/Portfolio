@@ -25,7 +25,7 @@
       <div class="board-bottom">
           <div class="board-addition">
             <div v-if="searchMore" class="search-more" @click="fetchSearchList">계속 검색</div>
-            <a class="write-btn" href="/board/write">글쓰기</a>
+            <router-link class="write-btn" to="/board/write">글쓰기</router-link>
           </div>
           <div v-if="pageStartList.length" class="board-page">
             <span v-show="category[currentCategory].pageBlock > 0" class="page-pre" href="#" @click="changePageList('pre')">&lt;</span>

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const DOMAIN = 'http://localhost:8080/portfolio'
+const DOMAIN = 'http://localhost:8080/api'
 
 export const request = (method, url, data) => {
   return axios({
@@ -36,7 +36,7 @@ export const board = {
   file (id) {
     return axios({
       method: 'get',
-      url: `http://localhost:8080/portfolio/board/download?id=${id}`,
+      url: `http://localhost:8080/api/board/download?id=${id}`,
       responseType: 'arraybuffer'
     }).then(res => {
       const blob = new Blob([res.data])
