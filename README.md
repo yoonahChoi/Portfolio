@@ -1,8 +1,10 @@
 # Portfolio Site
 
+![메인](./images/projects.png)
+
 ## 게시판 기능
 
-![게시판 메인](/images/board.png)
+![게시판 메인](./images/board.png)
 
 카테고리 별로 게시물을 조회할 수 있습니다.
 
@@ -10,7 +12,7 @@
 
 전체, 카테고리별 페이징 처리하였습니다.
 
-![게시글](/images/detail.png)
+![게시글](./images/detail.png)
 
 조회수, 추천, 비추천 기능은 쿠키를 사용하여 중복을 방지하였습니다.
 
@@ -18,13 +20,13 @@
 
 수정, 삭제 기능
 
-![글쓰기](/images/write.png)
+![글쓰기](./images/write.png)
 
 vue2-editor 오픈 소스를 이용하였습니다.
 
 파일을 업로드 할 수 있습니다.
 
-![글쓰기](/images/search.png)
+![검색](./images/search.png)
 
 제목, 제목+내용, 내용, 작성자 별로 검색할 수 있습니다.
 
@@ -34,11 +36,11 @@ vue2-editor 오픈 소스를 이용하였습니다.
 
 vue 프로젝트 폴더 구조입니다.
 
-![프론트](/images/front.png)
+![프론트](./images/front.png)
 
 spring 프로젝트 폴더 구조입니다.
 
-![프론트](/images/back.png)
+![백엔드](./images/back.png)
 
 ## Backend architecture
 
@@ -119,7 +121,7 @@ spring 프로젝트 폴더 구조입니다.
         
 - DB 스키마
 
-![프론트](/images/erd.png)
+![스키마](./images/erd.png)
 
 
 ### 향후 추가 할 기능들
