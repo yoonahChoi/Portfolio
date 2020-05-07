@@ -18,6 +18,7 @@
             </ul>
           </nav>
           <div class="login-wrap" :class="$mq">
+            <router-link class="login-link" to="/login">로그인</router-link>
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomePage from '@/views/HomePage.vue'
-import PageNotFound from '@/views/PageNotFound'
 import board from '@/router/boardRouter'
 
 Vue.use(VueRouter)
@@ -12,6 +11,11 @@ const routes = [
     name: 'Home',
     component: HomePage
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/LoginPage.vue')
+  },
   ...board,
   {
     path: '/planner',
@@ -20,7 +24,7 @@ const routes = [
   {
     path: '*',
     name: '404',
-    component: PageNotFound
+    component: () => import('@/views/PageNotFound')
   }
 ]
 

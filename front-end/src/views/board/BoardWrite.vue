@@ -102,7 +102,8 @@ export default {
 @mixin write-page-btn {
   padding: 8px;
   border: 1px solid $white-blue;
-  color: $classic-blue;
+  color: $classic-blue !important;
+  font-weight: normal;
   background-color: #fff;
   font-size: 13px;
 }

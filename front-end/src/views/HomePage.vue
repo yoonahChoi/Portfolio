@@ -136,7 +136,7 @@ export default {
 }
 .card-content {
   position: absolute;
-  font-size: 20px;
+  font-size: 18px;
   top: 90px;
   width: 90%;
   left: 25px;
@@ -160,7 +160,7 @@ export default {
 }
 .tag {
   float: left;
-  font-size: 15px;
+  font-size: 14px;
   padding: 0 10px;
   border-radius: 20px;
   background-color: $classic-blue;
